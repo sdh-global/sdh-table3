@@ -16,14 +16,14 @@ class DjangoTemplatePlugin(BasePlugin):
         self.template = template or 'ua2/table3/main.html'
 
     def process_request(self, request):
-        self.template = request.get('template',
-                                    self.template)
+        request['template'] = request.get('template',
+                                          self.template)
 
     def process_output(self, request, table, data):
         kwargs = {'table': table,
                   'rows': table.iter_rows(data),
                   'context_instance': RequestContext(request)}
-        return loader.render_to_string(self.template,
+        return loader.render_to_string(request['template'],
                                        dictionary=kwargs,
                                        context_instance=RequestContext(request))
     process_output.mimetype = 'text/html'
