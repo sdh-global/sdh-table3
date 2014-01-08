@@ -8,9 +8,11 @@ from django.template import loader, RequestContext
 from django.forms.util import flatatt
 
 class Column(object):
+    header_template = 'header_column.html'
     creation_counter = 0
 
     def __init__(self, label, refname=None, **attrs):
+        self.name = None #fills by table metaclass
         self.label = label
         self.refname = refname
         self.attrs = attrs
@@ -103,3 +105,20 @@ class TemplateColumn(Column):
                         'record': row, # for compatilibty with django_tables2 tempaltes
                         'row': row},
             context_instance=RequestContext(table.request))
+
+
+class CheckboxColumn(Column):
+    header_template = 'header_checkbox.html'
+
+    def __init__(self, *args, **attrs):
+        super(CheckboxColumn, self).__init__('', *args, **attrs)
+
+    def as_html(self, table, row, **kwargs):
+        attrs = self.attrs.copy()
+        attrs['type'] = 'checkbox'
+        attrs['autocomplete'] = 'off'
+        attrs['name'] = self.name
+        attrs['value'] = self.get_value(table, row, **kwargs)
+
+        html = u"<input {attrs} />".format(attrs=flatatt(attrs))
+        return mark_safe(html)

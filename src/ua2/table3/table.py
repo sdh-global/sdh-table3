@@ -28,6 +28,9 @@ def get_declared_columns(bases, attrs, with_base_columns=True):
             if hasattr(base, 'declared_columns'):
                 columns = base.declared_columns.items() + columns
 
+    for name, column in columns:
+        setattr(column, 'name', name)
+
     return SortedDict(columns)
 
 

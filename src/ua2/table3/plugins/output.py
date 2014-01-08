@@ -24,8 +24,9 @@ class DjangoTemplatePlugin(BasePlugin):
 
     def header(self, table_obj, table_cls):
         for column_name in table_obj.columns:
+            column = table_obj.base_columns[column_name]
             yield loader.render_to_string(
-                self.template_path + 'header_column.html',
+                self.template_path + column.header_template,
                 dictionary={
                     'table': table_obj,
                     'column_name': column_name,
