@@ -12,18 +12,22 @@ class DjangoTemplatePlugin(BasePlugin):
     """
     output = 'html'
 
-    def __init__(self, template=None):
-        self.template = template or 'ua2/table3/main.html'
+    def __init__(self, template_path=None):
+        self.template_path = template_path or 'ua2/table3/'
 
-    def process_request(self, request):
-        request['template'] = request.get('template',
-                                          self.template)
+    def render(self, table_obj, table_cls):
+        return loader.render_to_string(
+            self.template_path + 'main.html',
+            dictionary={'table': table_obj,
+                        'header': self.header(table_obj, table_cls)},
+            context_instance=RequestContext(table_obj.request))
 
-    def process_output(self, request, table, data):
-        kwargs = {'table': table,
-                  'rows': table.iter_rows(data),
-                  'context_instance': RequestContext(request)}
-        return loader.render_to_string(request['template'],
-                                       dictionary=kwargs,
-                                       context_instance=RequestContext(request))
-    process_output.mimetype = 'text/html'
+    def header(self, table_obj, table_cls):
+        for column_name in table_obj.columns:
+            yield loader.render_to_string(
+                self.template_path + 'header_column.html',
+                dictionary={
+                    'table': table_obj,
+                    'column_name': column_name,
+                    'column': table_obj.base_columns[column_name]},
+                context_instance=RequestContext(table_obj.request))
