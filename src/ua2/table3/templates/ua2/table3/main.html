@@ -4,6 +4,9 @@
             {% if table.features.quicksearch  %}
                {% include "ua2/table3/quicksearch.html" %}
             {% endif %}
+            {% if table.features.category %}
+              {% include "ua2/table3/category.html" %}
+            {% endif %}
             {% for plugin in table.features.postaction %}
               {% include "ua2/table3/post_action.html" %}
             {% endfor %}
