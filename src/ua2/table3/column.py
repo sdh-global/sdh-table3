@@ -11,10 +11,12 @@ class Column(object):
     header_template = 'header_column.html'
     creation_counter = 0
 
-    def __init__(self, label, refname=None, **attrs):
+    def __init__(self, label, refname=None, sortable=False, order_by=None, **attrs):
         self.name = None #fills by table metaclass
         self.label = label
         self.refname = refname
+        self.sortable = sortable
+        self.order_by = order_by
         self.attrs = attrs
 
         self.creation_counter = Column.creation_counter

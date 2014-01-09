@@ -16,7 +16,35 @@ class SortedColumnHeader(object):
 
 
 class SingleSortPlugin(BasePlugin):
-    column_header = SortedColumnHeader
+    def set_ordering_mode(self, order_by, mode):
+        prefix = ''
+        if mode == 'desc':
+            prefix = '-'
 
-    def process_request(self, request):
-        request['sort_by'] = request.get('sort_by')
+        return [ '%s%s' % (prefix, item) for item in order_by ]
+
+    def process_request(self, table, request):
+        table.features['sort'] = {}
+
+        sort_by = request.REQUEST.get('sort_by', None)
+        if not sort_by:
+            return
+
+        if sort_by[0] == '-':
+            sort_mode = 'desc'
+            sort_by = sort_by[1:]
+        else:
+            sort_mode = 'asc'
+
+        for column_name in table.columns:
+            if column_name == sort_by:
+                table.features['sort'][column_name] = sort_mode
+                column = table.base_columns[column_name]
+                order_by = []
+                if column.order_by:
+                    order_by += column.order_by
+                else:
+                    order_by.append(column.refname)
+
+                order_by = self.set_ordering_mode(order_by, sort_mode)
+                table.data = table.data.order_by(*order_by)

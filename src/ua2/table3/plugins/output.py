@@ -25,10 +25,13 @@ class DjangoTemplatePlugin(BasePlugin):
     def header(self, table_obj, table_cls):
         for column_name in table_obj.columns:
             column = table_obj.base_columns[column_name]
+            sort_mode = table_obj.features.get('sort',
+                                               {}).get(column_name, None)
             yield loader.render_to_string(
                 self.template_path + column.header_template,
                 dictionary={
                     'table': table_obj,
                     'column_name': column_name,
+                    'sort_mode': sort_mode,
                     'column': table_obj.base_columns[column_name]},
                 context_instance=RequestContext(table_obj.request))
