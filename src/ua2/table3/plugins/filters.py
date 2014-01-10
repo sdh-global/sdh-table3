@@ -11,7 +11,8 @@ class CategoryFilter(BasePlugin):
                                       'selected': None}
 
         category = request.REQUEST.get('category', None)
-        if category in self.categories:
+        categories = dict(self.categories)
+        if category in categories:
             table.features['category']['selected'] = category
             cb = getattr(table, 'category_filter', None)
             if cb and callable(cb):
