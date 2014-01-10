@@ -71,7 +71,7 @@ class HrefColumn(Column):
         reverse_args = self.reverse_args
         if callable(reverse_args):
             reverse_args = reverse_args(row)
-        elif type(self.reverse_args) is types.ListType:
+        elif type(self.reverse_args) in (types.ListType, types.TupleType):
             reverse_args = [ self.get_value(table, row, refname=item) for item in reverse_args ]
         elif type(reverse_args) in types.StringTypes:
             reverse_args = [ self.get_value(table, row, refname=reverse_args)]
