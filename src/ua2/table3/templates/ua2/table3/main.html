@@ -13,6 +13,7 @@
         </li>
     </ul>
 <form id="id_{{ table.id }}_form" name="{{ table.id }}_form" action="" method="POST">
+{% csrf_token %}
 <table class="table table-striped table-bordered table-condensed dataTable" id="id_{{ table.id }}">
     <thead>
         <tr>
@@ -25,7 +26,7 @@
         {% for row in table.rows %}
         <tr class="{{ forloop.counter|divisibleby:2|yesno:"even,odd" }}">
             {% for cell in row.cells %}
-            <td>{{ cell.as_html }}</td>
+            <td {% if cell.style %}style="{{ cell.style }}"{% endif %}>{{ cell.as_html }}</td>
             {% endfor %}
         </tr>
         {% endfor %}

@@ -27,11 +27,17 @@ class DjangoTemplatePlugin(BasePlugin):
             column = table_obj.base_columns[column_name]
             sort_mode = table_obj.features.get('sort',
                                                {}).get(column_name, None)
+
+            if column.header_style and callable(column.header_style):
+                style = column.header_style(table_obj)
+            else:
+                style = column.header_style
             yield loader.render_to_string(
                 self.template_path + column.header_template,
                 dictionary={
                     'table': table_obj,
                     'column_name': column_name,
                     'sort_mode': sort_mode,
-                    'column': table_obj.base_columns[column_name]},
+                    'column': table_obj.base_columns[column_name],
+                    'style': style},
                 context_instance=RequestContext(table_obj.request))

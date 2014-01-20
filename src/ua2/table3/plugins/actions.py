@@ -14,11 +14,12 @@ class ActionsState(object):
 
     @property
     def actions(self):
+        action_dict = dict(self.obj.actions)
         for action_key in self.build_auctions():
-            yield (action_key, self.obj.actions[action_key])
+            yield (action_key, action_dict[action_key])
 
     def build_auctions(self):
-        return self.obj.actions.keys()
+        return [ item[0] for item in self.obj.actions ]
 
 
 class PostAction(BasePlugin):

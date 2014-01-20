@@ -11,13 +11,18 @@ class Column(object):
     header_template = 'header_column.html'
     creation_counter = 0
 
-    def __init__(self, label, refname=None, sortable=False, order_by=None, **attrs):
+    def __init__(self, label, refname=None, sortable=False, order_by=None,
+                 header_style=None, cell_style=None, default_value='',
+                 **attrs):
         self.name = None #fills by table metaclass
         self.label = label
         self.refname = refname
         self.sortable = sortable
         self.order_by = order_by
+        self.header_style = header_style
+        self.cell_style = cell_style
         self.attrs = attrs
+        self.default_value = default_value
 
         self.creation_counter = Column.creation_counter
         Column.creation_counter += 1
@@ -50,7 +55,10 @@ class Column(object):
         return default
 
     def as_html(self, table, row, **kwargs):
-        return self.get_value(table, row, **kwargs)
+        value = self.get_value(table, row, **kwargs)
+        if value is None:
+            return self.default_value
+        return value
 
 
 class LabelColumn(Column):

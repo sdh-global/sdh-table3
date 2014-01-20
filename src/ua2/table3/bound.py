@@ -6,6 +6,7 @@ class BoundCell(object):
         self.row_number = row_number
         self.data = data
         self.row = row
+        self._style = None
 
     def __unicode__(self):
         return unicode(self.value)
@@ -17,6 +18,14 @@ class BoundCell(object):
     def as_html(self):
         return self.column.as_html(self.table, self.row, row_number=self.row_number)
 
+    @property
+    def style(self):
+        if self._style is None:
+            if self.column.cell_style and callable(self.column.cell_style):
+                self._style = self.column.cell_style(self.table, self.row, self.value)
+            else:
+                self._style = self.column.cell_style
+        return self._style
 
 class BoundRow(object):
     def __init__(self, table, row_number, data, row):
