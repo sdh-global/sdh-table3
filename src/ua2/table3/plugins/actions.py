@@ -15,10 +15,10 @@ class ActionsState(object):
     @property
     def actions(self):
         action_dict = dict(self.obj.actions)
-        for action_key in self.build_auctions():
+        for action_key in self.build_actions():
             yield (action_key, action_dict[action_key])
 
-    def build_auctions(self):
+    def build_actions(self):
         return [ item[0] for item in self.obj.actions ]
 
 
@@ -34,5 +34,5 @@ class PostAction(BasePlugin):
         plugins.append(state)
         table.features['postaction'] = plugins
 
-        if request.REQUEST.get('postaction', '') in state.build_auctions():
+        if request.REQUEST.get('postaction', '') in state.build_actions():
             state.process(request.REQUEST.get('postaction', ''))
