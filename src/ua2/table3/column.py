@@ -120,8 +120,8 @@ class TemplateColumn(Column):
 class CheckboxColumn(Column):
     header_template = 'header_checkbox.html'
 
-    def __init__(self, *args, **attrs):
-        super(CheckboxColumn, self).__init__('', *args, **attrs)
+    def __init__(self, label=None, **attrs):
+        super(CheckboxColumn, self).__init__(label, **attrs)
 
     def as_html(self, table, row, **kwargs):
         attrs = self.attrs.copy()
