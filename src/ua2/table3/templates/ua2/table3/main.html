@@ -26,7 +26,7 @@
         {% for row in table.rows %}
         <tr class="{{ forloop.counter|divisibleby:2|yesno:"even,odd" }}">
             {% for cell in row.cells %}
-            <td {% if cell.style %}style="{{ cell.style }}"{% endif %}>{{ cell.as_html }}</td>
+            <td {{ cell.html_attrs }}>{{ cell.as_html }}</td>
             {% endfor %}
         </tr>
         {% endfor %}

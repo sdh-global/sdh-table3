@@ -12,7 +12,7 @@ class Column(object):
     creation_counter = 0
 
     def __init__(self, label, refname=None, sortable=False, order_by=None,
-                 header_style=None, cell_style=None, default_value='',
+                 header_style=None, cell_attrs=None, default_value='',
                  **attrs):
         self.name = None #fills by table metaclass
         self.label = label
@@ -20,9 +20,10 @@ class Column(object):
         self.sortable = sortable
         self.order_by = order_by
         self.header_style = header_style
-        self.cell_style = cell_style
+        self._cell_attrs = cell_attrs
         self.attrs = attrs
         self.default_value = default_value
+        self._value = None
 
         self.creation_counter = Column.creation_counter
         Column.creation_counter += 1
@@ -58,6 +59,19 @@ class Column(object):
         value = self.get_value(table, row, **kwargs)
         if value is None:
             return self.default_value
+        return value
+
+    def cell_html_attrs(self, table, row, value, row_number):
+        """ render html cell attr """
+        if not self._cell_attrs:
+            return ''
+
+        if callable(self._cell_attrs):
+            value = flatatt(self._cell_attrs(table, row, value, row_number))
+        elif type(self._cell_attrs) == types.DictType:
+            value = flatatt(self._cell_attrs)
+        else:
+            value = self._cell_attrs
         return value
 
 
