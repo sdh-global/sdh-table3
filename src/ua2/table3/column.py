@@ -4,8 +4,9 @@ from django.db.models.manager import Manager
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.html import escape
-from django.template import loader, RequestContext
+from django.template import loader, RequestContext, Template
 from django.forms.util import flatatt
+
 
 class Column(object):
     header_template = 'header_column.html'
@@ -129,6 +130,19 @@ class TemplateColumn(Column):
                         'record': row, # for compatilibty with django_tables2 tempaltes
                         'row': row},
             context_instance=RequestContext(table.request))
+
+
+class InlineTemplateColumn(Column):
+    def __init__(self, *args, **attrs):
+        self.template = Template(attrs.pop('template', None))
+        super(InlineTemplateColumn, self).__init__(*args, **attrs)
+
+    def as_html(self, table, row, **kwargs):
+        return self.template.render(
+            RequestContext(table.request,
+                           {'table': table,
+                            'record': row, # for compatilibty with django_tables2 tempaltes
+                            'row': row}))
 
 
 class CheckboxColumn(Column):
