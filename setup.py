@@ -34,7 +34,7 @@ setup(
     package_dir = {'': 'src'},
     entry_points = {},
     eager_resources = ['ua2'],
-    version='0.4.0',
+    version='0.4.1',
     install_requires=['Django>=1.5,<1.6'],
     license='BSD License',
     include_package_data=True,

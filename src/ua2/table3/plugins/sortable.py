@@ -16,6 +16,9 @@ class SortedColumnHeader(object):
 
 
 class SingleSortPlugin(BasePlugin):
+    def __init__(self, default_order_by=None):
+        self.default_order_by = default_order_by
+
     def set_ordering_mode(self, order_by, mode):
         prefix = ''
         if mode == 'desc':
@@ -25,8 +28,7 @@ class SingleSortPlugin(BasePlugin):
 
     def process_request(self, table, request):
         table.features['sort'] = {}
-
-        sort_by = request.REQUEST.get('sort_by', None)
+        sort_by = request.REQUEST.get('sort_by', self.default_order_by)
         if not sort_by:
             return
 
