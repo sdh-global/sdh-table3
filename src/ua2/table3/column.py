@@ -10,6 +10,7 @@ from django.forms.util import flatatt
 
 class Column(object):
     header_template = 'header_column.html'
+    cell_template = 'cell_column.html'
     creation_counter = 0
 
     def __init__(self, label, refname=None, sortable=False, order_by=None,
@@ -56,11 +57,24 @@ class Column(object):
             return value
         return default
 
-    def as_html(self, table, row, **kwargs):
-        value = self.get_value(table, row, **kwargs)
+    def as_html(self, table, row, output_render, row_number, extra_attrs=None):
+        value = self.get_value(table, row)
         if value is None:
-            return self.default_value
-        return value
+            value = self.default_value
+
+        attrs = extra_attrs or {}
+        attrs.update(self.cell_html_attrs(table, row, value, row_number))
+        attrs.update(self.attrs)
+
+        return loader.render_to_string(
+            output_render.get_template_list(self.cell_template),
+            dictionary={'table': table,
+                        'record': row, # for compatilibty with django_tables2 tempaltes
+                        'row': row,
+                        'attrs': attrs,
+                        'value': value},
+            context_instance=RequestContext(table.request))
+
 
     def cell_html_attrs(self, table, row, value, row_number):
         """ render html cell attr """
@@ -81,6 +95,8 @@ class LabelColumn(Column):
 
 
 class HrefColumn(Column):
+    cell_template = 'cell_href.html'
+
     def __init__(self, *args, **attrs):
         self.reverse = attrs.pop('reverse', None)
         self.reverse_args = attrs.pop('reverse_args', [])
@@ -105,14 +121,12 @@ class HrefColumn(Column):
             href = "#NoReverseMatch"
         return href
 
-    def as_html(self, table, row, **kwargs):
-        html = u"<a href='{href}{get_args}' {attrs}>{content}</a>".format(
-            href=self.resolve(table, row),
-            attrs=flatatt(self.attrs),
-            content=escape(self.get_value(table, row)),
-            get_args=self.get_args
-            )
-        return mark_safe(html)
+    def as_html(self, table, row, output_render, row_number, extra_attrs=None):
+        attrs = {'href': self.resolve(table, row),
+                 'get_args': self.get_args}
+        return super(HrefColumn, self).as_html(table, row, output_render,
+                                               row_number, attrs)
+
 
 
 class TemplateColumn(Column):
@@ -120,7 +134,7 @@ class TemplateColumn(Column):
         self.template = attrs.pop('template', None)
         super(TemplateColumn, self).__init__(*args, **attrs)
 
-    def as_html(self, table, row, **kwargs):
+    def as_html(self, table, row, output_render, row_number, extra_attrs=None):
         if not self.template:
             return ''
 
@@ -137,7 +151,7 @@ class InlineTemplateColumn(Column):
         self.template = Template(attrs.pop('template', None))
         super(InlineTemplateColumn, self).__init__(*args, **attrs)
 
-    def as_html(self, table, row, **kwargs):
+    def as_html(self, table, row, output_render, row_number, extra_attrs):
         return self.template.render(
             RequestContext(table.request,
                            {'table': table,
@@ -147,16 +161,17 @@ class InlineTemplateColumn(Column):
 
 class CheckboxColumn(Column):
     header_template = 'header_checkbox.html'
+    cell_template = 'cell_checkbox.html'
 
     def __init__(self, label=None, **attrs):
         super(CheckboxColumn, self).__init__(label, **attrs)
 
-    def as_html(self, table, row, **kwargs):
+    def as_html(self, table, row, output_render, row_number, extra_attrs=None):
         attrs = self.attrs.copy()
         attrs['type'] = 'checkbox'
         attrs['autocomplete'] = 'off'
         attrs['name'] = self.name
-        attrs['value'] = self.get_value(table, row, **kwargs)
+        attrs['value'] = self.get_value(table, row)
 
-        html = u"<input {attrs} />".format(attrs=flatatt(attrs))
-        return mark_safe(html)
+        return super(CheckboxColumn, self).as_html(
+            table, row, output_render, row_number, attrs)

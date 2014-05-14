@@ -127,8 +127,8 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
         data = self.data_proxy(self, self.request)
         return self.request.build_response(self, output_handler, data)
 
-    def rows(self):
+    def rows(self, output_render=None):
         row_number = 1
         for row in self.rows_iterator():
-            yield BoundRow(self, row_number, self.data, row)
+            yield BoundRow(self, row_number, self.data, row, output_render)
             row_number += 1

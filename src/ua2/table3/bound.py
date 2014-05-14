@@ -1,5 +1,5 @@
 class BoundCell(object):
-    def __init__(self, column_name, table, row_number, data, row):
+    def __init__(self, column_name, table, row_number, data, row, output_render):
         self.column_name = column_name
         self.table = table
         self.column = table.base_columns[column_name]
@@ -8,6 +8,7 @@ class BoundCell(object):
         self.row = row
         self._cell_atts = None
         self._value = None
+        self.output_render = output_render
 
     def __unicode__(self):
         return unicode(self.value)
@@ -15,30 +16,24 @@ class BoundCell(object):
     @property
     def value(self):
         if self._value is None:
-            self._value = self.column.get_value(self.table, self.row, row_number=self.row_number)
+            self._value = self.column.get_value(self.table,
+                                                self.row,
+                                                row_number=self.row_number)
         return self._value
 
     def as_html(self):
-        return self.column.as_html(self.table, self.row, row_number=self.row_number)
-
-    @property
-    def html_attrs(self):
-        if self._cell_atts is None:
-            self._cell_atts = self.column.cell_html_attrs(
-                self.table,
-                self.row,
-                self.value,
-                row_number=self.row_number)
-        return self._cell_atts
+        return self.column.as_html(self.table, self.row, self.output_render,
+                                   self.row_number)
 
 
 class BoundRow(object):
-    def __init__(self, table, row_number, data, row):
+    def __init__(self, table, row_number, data, row, output_render):
         self.table = table
         self.number = row_number
         self.data = data
         self.row = row
         self.row_number = row_number
+        self.output_render = output_render
 
     def cells(self):
         for column_name in self.table.columns:
@@ -46,4 +41,5 @@ class BoundRow(object):
                             self.table,
                             self.row_number,
                             self.data,
-                            self.row)
+                            self.row,
+                            self.output_render)

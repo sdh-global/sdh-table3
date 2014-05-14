@@ -16,14 +16,20 @@ class DjangoTemplatePlugin(BasePlugin):
     def __init__(self, template_path=None):
         self.template_path = template_path or self.base_path
 
+    def get_template_list(self, template_name):
+        return (self.template_path + template_name,
+                self.base_path + template_name)
+
     def render(self, table_obj, table_cls):
-        return loader.render_to_string(
-            (self.template_path + 'main.html',
-             self.base_path + 'main.html'),
+        return loader.render_to_string(self.get_template_list('main.html'),
             dictionary={'table': table_obj,
                         'header': self.header(table_obj, table_cls),
+                        'rows': self.rows(table_obj, table_cls),
                         'columns': self.columns(table_obj, table_cls)},
             context_instance=RequestContext(table_obj.request))
+
+    def rows(self, table_obj, table_cls):
+        return table_obj.rows(self)
 
     def columns(self, table_obj, table_cls):
         for column_name in table_obj.columns:
