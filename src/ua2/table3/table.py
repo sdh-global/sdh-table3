@@ -119,7 +119,7 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
         for handler in self.plugins_request:
             try:
                 handler(self.request)
-            except StopProcessing, e:
+            except StopProcessing as e:
                 return self.request.response(e)
 
         output_handler = self.plugins_output[self.request.output]

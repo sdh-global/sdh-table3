@@ -1,5 +1,3 @@
-import types
-
 from django.db.models.manager import Manager
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse, NoReverseMatch
@@ -69,7 +67,7 @@ class Column(object):
 
         if callable(self._cell_attrs):
             value = flatatt(self._cell_attrs(table, row, value, row_number))
-        elif type(self._cell_attrs) == types.DictType:
+        elif type(self._cell_attrs) is dict:
             value = flatatt(self._cell_attrs)
         else:
             value = self._cell_attrs
@@ -94,14 +92,14 @@ class HrefColumn(Column):
         reverse_args = self.reverse_args
         if callable(reverse_args):
             reverse_args = reverse_args(row)
-        elif type(self.reverse_args) in (types.ListType, types.TupleType):
+        elif type(self.reverse_args) in (list, tuple):
             reverse_args = [ self.get_value(table, row, refname=item) for item in reverse_args ]
-        elif type(reverse_args) in types.StringTypes:
+        elif type(reverse_args) is str:
             reverse_args = [ self.get_value(table, row, refname=reverse_args)]
 
         try:
             href = reverse(self.reverse, args=reverse_args)
-        except NoReverseMatch, e:
+        except NoReverseMatch:
             href = "#NoReverseMatch"
         return href
 

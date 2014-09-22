@@ -1,5 +1,4 @@
 import math
-from types import ListType
 
 from ua2.table3.plugin import BasePlugin
 from django.template import loader, RequestContext
@@ -45,7 +44,7 @@ class Paginator(object):
         """ Return input data length (in rows)
         """
         if self._data_length is None:
-            if type(self.table.data) is ListType:
+            if type(self.table.data) is list:
                 self._data_length = len(self.table.data)
             else:
                 self._data_length = self.table.data.count()
