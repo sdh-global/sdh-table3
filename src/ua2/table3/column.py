@@ -5,6 +5,8 @@ from django.utils.html import escape
 from django.template import loader, RequestContext, Template
 from django.forms.util import flatatt
 
+from .utils import dict_type, list_type, tuple_type, str_type, unicode_type
+
 
 class Column(object):
     header_template = 'header_column.html'
@@ -67,7 +69,7 @@ class Column(object):
 
         if callable(self._cell_attrs):
             value = flatatt(self._cell_attrs(table, row, value, row_number))
-        elif type(self._cell_attrs) is dict:
+        elif isinstance(self._cell_attrs, dict_type):
             value = flatatt(self._cell_attrs)
         else:
             value = self._cell_attrs
@@ -92,9 +94,9 @@ class HrefColumn(Column):
         reverse_args = self.reverse_args
         if callable(reverse_args):
             reverse_args = reverse_args(row)
-        elif type(self.reverse_args) in (list, tuple):
+        elif isinstance(self.reverse_args, list_type) or isinstance(self.reverse_args, tuple_type):
             reverse_args = [ self.get_value(table, row, refname=item) for item in reverse_args ]
-        elif type(reverse_args) is str:
+        elif isinstance(reverse_args, str_type) or isinstance(reverse_args, unicode_type):
             reverse_args = [ self.get_value(table, row, refname=reverse_args)]
 
         try:
