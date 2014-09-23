@@ -1,11 +1,11 @@
-import types
-
 from django.db.models.manager import Manager
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.html import escape
 from django.template import loader, RequestContext, Template
 from django.forms.util import flatatt
+
+from .utils import dict_type, list_type, tuple_type, str_type, unicode_type
 
 
 class Column(object):
@@ -69,7 +69,7 @@ class Column(object):
 
         if callable(self._cell_attrs):
             value = flatatt(self._cell_attrs(table, row, value, row_number))
-        elif type(self._cell_attrs) == types.DictType:
+        elif isinstance(self._cell_attrs, dict_type):
             value = flatatt(self._cell_attrs)
         else:
             value = self._cell_attrs
@@ -94,14 +94,14 @@ class HrefColumn(Column):
         reverse_args = self.reverse_args
         if callable(reverse_args):
             reverse_args = reverse_args(row)
-        elif type(self.reverse_args) in (types.ListType, types.TupleType):
+        elif isinstance(self.reverse_args, list_type) or isinstance(self.reverse_args, tuple_type):
             reverse_args = [ self.get_value(table, row, refname=item) for item in reverse_args ]
-        elif type(reverse_args) in types.StringTypes:
+        elif isinstance(reverse_args, str_type) or isinstance(reverse_args, unicode_type):
             reverse_args = [ self.get_value(table, row, refname=reverse_args)]
 
         try:
             href = reverse(self.reverse, args=reverse_args)
-        except NoReverseMatch, e:
+        except NoReverseMatch:
             href = "#NoReverseMatch"
         return href
 
