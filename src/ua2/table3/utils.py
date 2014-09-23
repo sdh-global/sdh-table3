@@ -11,7 +11,7 @@ if six.PY3:
 else:
     dict_type = types.DictType
     list_type = types.ListType
-    typle_type = types.TupleType
+    tuple_type = types.TupleType
 
     str_type = types.StringType
     unicode_type = types.UnicodeType
