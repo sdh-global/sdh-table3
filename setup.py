@@ -35,7 +35,7 @@ setup(
     entry_points = {},
     eager_resources = ['ua2'],
     version='0.4.3',
-    install_requires=['Django>=1.5', 'six>=1.6.1'],
+    install_requires=['Django>=1.5', ],
     license='BSD License',
     include_package_data=True,
     zip_safe=False,

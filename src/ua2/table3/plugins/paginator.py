@@ -40,7 +40,6 @@ class Paginator(object):
         start, end = self.range
         return self.table.data[start:end]
 
-
     @property
     def data_length(self):
         """ Return input data length (in rows)
@@ -56,7 +55,7 @@ class Paginator(object):
     def pages_count(self):
         if self._pages_count is None:
             self._pages_count = int(math.ceil(
-                    float(self.data_length)/float(self.row_per_page)))
+                    float(self.data_length) / float(self.row_per_page)))
             if not self._pages_count:
                 self._pages_count = 1
         return self._pages_count
@@ -72,28 +71,26 @@ class Paginator(object):
         """ return page numbers """
         if self._bar is None:
             self._bar = []
-            for page in range(self.page_number-self.page_per_segment/2,
-                              self.page_number+self.page_per_segment/2+1):
+            for page in range(self.page_number - self.page_per_segment // 2,
+                              self.page_number + self.page_per_segment // 2 + 1):
                 if page <= 0 or page > self.pages_count:
                     continue
 
                 self._bar.append(page)
         return self._bar
 
-
     @property
     def prev_page_number(self):
-        if self.page_number-1 <= 0:
+        if self.page_number - 1 <= 0:
             return None
 
-        return self.page_number-1
+        return self.page_number - 1
 
     @property
     def next_page_number(self):
-        if self.page_number+1 > self.pages_count:
+        if self.page_number + 1 > self.pages_count:
             return None
-        return self.page_number+1
-
+        return self.page_number + 1
 
     @property
     def prev_page_segment(self):
@@ -129,7 +126,7 @@ class Paginator(object):
         self._url_prefix = '?'
 
         qset = self.request.GET.copy()
-        if qset.has_key('page'):
+        if 'page' in qset:
             del qset['page']
 
         if len(qset) > 0:
@@ -140,6 +137,7 @@ class Paginator(object):
 
     def is_paginate(self):
         return self.pages_count > 1
+
 
 class PaginatorPlugin(BasePlugin):
     def __init__(self, row_per_page=None, paginator_cls=None):
