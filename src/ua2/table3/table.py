@@ -97,6 +97,7 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
         self.data = data_source
         self.rows_iterator = None
         self.features = {}
+        self._handlers = {}
 
     @property
     def columns(self):
@@ -132,3 +133,14 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
         for row in self.rows_iterator():
             yield BoundRow(self, row_number, self.data, row)
             row_number += 1
+
+    def get_handler(self, key):
+        if key in self._handlers:
+            return self._handlers[key]
+
+        self._handlers[key] = None
+        if hasattr(self, key):
+            handler = getattr(self, key)
+            if callable(handler):
+                self._handlers[key] = handler
+        return self._handlers[key]

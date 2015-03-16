@@ -24,8 +24,6 @@ class Column(object):
         self._cell_attrs = cell_attrs
         self.attrs = attrs
         self.default_value = default_value
-        self._value = None
-
         self.creation_counter = Column.creation_counter
         Column.creation_counter += 1
 
@@ -43,8 +41,9 @@ class Column(object):
         return value
 
     def get_value(self, table, row, refname=None, default=None, **kwargs):
-        if refname is None and self.refname is None:
-            return default
+        handler = table.get_handler('value_%s' % self.name):
+        if handler:
+            return handler(row, **kwargs)
 
         value = self._recursive_value(
             row,
@@ -57,6 +56,10 @@ class Column(object):
         return default
 
     def as_html(self, table, row, **kwargs):
+        handler = table.get_handler('render_html_%s' % self.name):
+        if handler:
+            return handler(row, **kwargs)
+
         value = self.get_value(table, row, **kwargs)
         if value is None:
             return self.default_value
