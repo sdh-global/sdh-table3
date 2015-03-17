@@ -89,7 +89,6 @@ class BaseTableMetaclass(type):
 class Table(six.with_metaclass(BaseTableMetaclass)):
     def __init__(self, key_name, session_storage, data_source):
         self.id = key_name
-        self.request_proxy = None # Class handler incoming request and convert it into internal Request class
         self.data_proxy = None # Class that retrieve data from extetnal storage
         self.plugins = []
 
@@ -113,20 +112,6 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
                 plugin.process_request(self, self.request)
 
         return
-
-        self.request_proxy(_request)
-        self.request['columns'] = self.base_columns.keys()
-
-        for handler in self.plugins_request:
-            try:
-                handler(self.request)
-            except StopProcessing as e:
-                return self.request.response(e)
-
-        output_handler = self.plugins_output[self.request.output]
-
-        data = self.data_proxy(self, self.request)
-        return self.request.build_response(self, output_handler, data)
 
     def rows(self):
         row_number = 1
