@@ -42,7 +42,7 @@ class BoundRow(object):
 
     @property
     def html_class(self):
-        handler = table.get_handler('row_html_class' % self.name):
+        handler = self.table.get_handler('row_html_class')
         if handler:
             return handler(self.row,
                            row_number=self.row_number)
@@ -51,7 +51,7 @@ class BoundRow(object):
 
     @property
     def html_attrs(self):
-        handler = table.get_handler('row_html_attrs' % self.name):
+        handler = self.table.get_handler('row_html_attrs')
         if handler:
             return handler(self.row,
                            row_number=self.row_number)
