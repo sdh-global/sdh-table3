@@ -89,7 +89,6 @@ class BaseTableMetaclass(type):
 class Table(six.with_metaclass(BaseTableMetaclass)):
     def __init__(self, key_name, session_storage, data_source):
         self.id = key_name
-        self.request_proxy = None # Class handler incoming request and convert it into internal Request class
         self.data_proxy = None # Class that retrieve data from extetnal storage
         self.plugins = []
 
@@ -97,6 +96,7 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
         self.data = data_source
         self.rows_iterator = None
         self.features = {}
+        self._handlers = {}
 
     @property
     def columns(self):
@@ -105,7 +105,7 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
     def process_request(self, _request):
         self.request = _request
 
-        self.rows_iterator = self.data.all()
+        self.rows_iterator = self.data
 
         for plugin in self.__class__.plugins:
             if hasattr(plugin, 'process_request'):
@@ -113,22 +113,19 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
 
         return
 
-        self.request_proxy(_request)
-        self.request['columns'] = self.base_columns.keys()
-
-        for handler in self.plugins_request:
-            try:
-                handler(self.request)
-            except StopProcessing, e:
-                return self.request.response(e)
-
-        output_handler = self.plugins_output[self.request.output]
-
-        data = self.data_proxy(self, self.request)
-        return self.request.build_response(self, output_handler, data)
-
-    def rows(self, output_render=None):
+    def rows(self):
         row_number = 1
-        for row in self.rows_iterator():
-            yield BoundRow(self, row_number, self.data, row, output_render)
+        for row in self.rows_iterator:
+            yield BoundRow(self, row_number, self.data, row)
             row_number += 1
+
+    def get_handler(self, key):
+        if key in self._handlers:
+            return self._handlers[key]
+
+        self._handlers[key] = None
+        if hasattr(self, key):
+            handler = getattr(self, key)
+            if callable(handler):
+                self._handlers[key] = handler
+        return self._handlers[key]

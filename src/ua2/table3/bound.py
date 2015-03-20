@@ -35,6 +35,23 @@ class BoundRow(object):
         self.row_number = row_number
         self.output_render = output_render
 
+    @property
+    def html_class(self):
+        handler = self.table.get_handler('row_html_class')
+        if handler:
+            return handler(self.row,
+                           row_number=self.row_number)
+
+        return ''
+
+    @property
+    def html_attrs(self):
+        handler = self.table.get_handler('row_html_attrs')
+        if handler:
+            return handler(self.row,
+                           row_number=self.row_number)
+        return ''
+
     def cells(self):
         for column_name in self.table.columns:
             yield BoundCell(column_name,
