@@ -105,7 +105,7 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
     def process_request(self, _request):
         self.request = _request
 
-        self.rows_iterator = self.data.all()
+        self.rows_iterator = self.data
 
         for plugin in self.__class__.plugins:
             if hasattr(plugin, 'process_request'):
@@ -115,7 +115,7 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
 
     def rows(self):
         row_number = 1
-        for row in self.rows_iterator():
+        for row in self.rows_iterator:
             yield BoundRow(self, row_number, self.data, row)
             row_number += 1
 
