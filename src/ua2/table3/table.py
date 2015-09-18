@@ -80,7 +80,7 @@ class BaseTableMetaclass(type):
 
             if hasattr(item, 'render'):
                 render.register(plugin.output,
-                                plugin.render)
+                                plugin)
             rc.append(plugin)
         setattr(new_class, 'render', render)
         setattr(new_class, 'plugins', rc)

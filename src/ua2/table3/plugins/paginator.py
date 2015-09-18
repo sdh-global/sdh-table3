@@ -1,10 +1,8 @@
 import math
 
-from ua2.table3.plugin import BasePlugin
-from django.template import loader, RequestContext
+from ..plugin import BasePlugin
 from ..settings import (CFG_TABLE_ROW_PER_PAGE, CFG_TABLE_PAGINATOR,
                         CFG_TABLE_PAGE_PER_SEGMENT)
-
 from ..utils import list_type, tuple_type
 
 
@@ -36,6 +34,7 @@ class Paginator(object):
         if self.page_number > self.pages_count:
             self.page_number = self.pages_count
 
+    @property
     def rows_iterator(self):
         start, end = self.range
         return self.table.data[start:end]

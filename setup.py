@@ -34,13 +34,13 @@ setup(
     package_dir = {'': 'src'},
     entry_points = {},
     eager_resources = ['ua2'],
-    version='0.4.4',
+    version='0.5.0',
     install_requires=['Django>=1.5', ],
     license='BSD License',
     include_package_data=True,
     zip_safe=False,
     author='Viacheslav Vic Bukhantsov',
-    author_email='vic@ua2web.com',
+    author_email='vic@ua2crm.com',
     platforms=['OS Independent'],
 
     classifiers=[
@@ -51,6 +51,7 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries'],

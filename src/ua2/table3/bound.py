@@ -23,11 +23,12 @@ class BoundCell(object):
 
     @property
     def html_attrs(self):
+        value = self.value
         if self._cell_atts is None:
             self._cell_atts = self.column.cell_html_attrs(
                 self.table,
                 self.row,
-                self.value,
+                value,
                 row_number=self.row_number)
         return self._cell_atts
 

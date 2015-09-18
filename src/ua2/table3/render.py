@@ -5,8 +5,8 @@ class LazyRender(object):
     def __get__(self, table, obj_type=None):
         return RenderProxy(table, obj_type, self.renders)
 
-    def register(self, output, render_function):
-        self.renders[output] = render_function
+    def register(self, output, render_plugin):
+        self.renders[output] = render_plugin
 
 
 class RenderProxy(object):
@@ -18,4 +18,4 @@ class RenderProxy(object):
     def __getattr__(self, key):
         if key not in self.registered_renders:
             return "Render %s not registered" % key
-        return self.registered_renders[key](self.obj, self.obj_type)
+        return self.registered_renders[key].render(self.obj, self.obj_type)

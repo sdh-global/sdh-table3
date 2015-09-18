@@ -1,13 +1,17 @@
+from __future__ import unicode_literals
+
 from django.db.models.manager import Manager
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse, NoReverseMatch
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.html import escape
 from django.template import loader, RequestContext, Template
 from django.forms.util import flatatt
+from django.utils.formats import number_format
 
 from .utils import dict_type, list_type, tuple_type, str_type, unicode_type
 
-
+@python_2_unicode_compatible
 class Column(object):
     header_template = 'header_column.html'
     creation_counter = 0
@@ -21,13 +25,14 @@ class Column(object):
         self.sortable = sortable
         self.order_by = order_by
         self.header_style = header_style
-        self._cell_attrs = cell_attrs
+        self._cell_attrs = cell_attrs or {}
+        self.extra_cell_attrs = {}
         self.attrs = attrs
         self.default_value = default_value
         self.creation_counter = Column.creation_counter
         Column.creation_counter += 1
 
-    def __unicode__(self):
+    def __str__(self):
         return self.column.label
 
     def _recursive_value(self, row, keylist):
@@ -67,16 +72,15 @@ class Column(object):
 
     def cell_html_attrs(self, table, row, value, row_number):
         """ render html cell attr """
-        if not self._cell_attrs:
-            return ''
+        result_attrs = {}
 
         if callable(self._cell_attrs):
-            value = flatatt(self._cell_attrs(table, row, value, row_number))
+            result_attrs.update(self._cell_attrs(table, row, value, row_number))
         elif isinstance(self._cell_attrs, dict_type):
-            value = flatatt(self._cell_attrs)
-        else:
-            value = self._cell_attrs
-        return value
+            result_attrs.update(self._cell_attrs)
+
+        result_attrs.update(self.extra_cell_attrs)
+        return flatatt(result_attrs)
 
 
 class LabelColumn(Column):
@@ -109,7 +113,7 @@ class HrefColumn(Column):
         return href
 
     def as_html(self, table, row, **kwargs):
-        html = u"<a href='{href}{get_args}' {attrs}>{content}</a>".format(
+        html = "<a href='{href}{get_args}' {attrs}>{content}</a>".format(
             href=self.resolve(table, row),
             attrs=flatatt(self.attrs),
             content=escape(self.get_value(table, row)),
@@ -161,5 +165,31 @@ class CheckboxColumn(Column):
         attrs['name'] = self.name
         attrs['value'] = self.get_value(table, row, **kwargs)
 
-        html = u"<input {attrs} />".format(attrs=flatatt(attrs))
+        html = "<input {attrs} />".format(attrs=flatatt(attrs))
         return mark_safe(html)
+
+
+class MoneyColumn(Column):
+    def __init__(self, label=None, refname=None, cell_class='money', positive_format='%s', negative_format='-%s', decimal_pos=2, force_grouping=True,
+                 empty_value='', *args, **attrs):
+        super(MoneyColumn, self).__init__(label, refname, *args, **attrs)
+        self.positive_format = positive_format
+        self.negative_format = negative_format
+        self.decimal_pos = decimal_pos
+        self.force_grouping = force_grouping
+        self.empty_value = empty_value
+        self.extra_cell_attrs['class'] = cell_class
+
+    def as_html(self, table, row, **kwargs):
+        value = self.get_value(table, row, **kwargs)
+        if value is not None:
+            if value < 0:
+                format_string = self.negative_format
+            else:
+                format_string = self.positive_format
+
+            return format_string % number_format(
+                abs(value), use_l10n=True, decimal_pos=self.decimal_pos,
+                force_grouping=True)
+
+        return self.empty_value
