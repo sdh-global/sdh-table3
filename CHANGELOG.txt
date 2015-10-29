@@ -1,2 +1,5 @@
+0.6.2
+  - fix set default refname
+
 0.6.1
   - set default refname by column name

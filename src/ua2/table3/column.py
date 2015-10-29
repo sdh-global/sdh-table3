@@ -22,7 +22,7 @@ class Column(object):
                  **attrs):
         self.name = None #fills by table metaclass
         self.label = label
-        self.refname = refname or self.name
+        self.refname = refname
         self.sortable = sortable
         self.order_by = order_by
         self.header_style = header_style
@@ -53,7 +53,7 @@ class Column(object):
 
         value = self._recursive_value(
             row,
-            (refname or self.refname).split('__'))
+            (refname or self.refname or self.name).split('__'))
 
         if value is not None:
             if isinstance(value, Manager):
