@@ -11,6 +11,7 @@ from django.utils.formats import number_format
 
 from .utils import dict_type, list_type, tuple_type, str_type, unicode_type
 
+
 @python_2_unicode_compatible
 class Column(object):
     header_template = 'header_column.html'
@@ -21,7 +22,7 @@ class Column(object):
                  **attrs):
         self.name = None #fills by table metaclass
         self.label = label
-        self.refname = refname
+        self.refname = refname or self.name
         self.sortable = sortable
         self.order_by = order_by
         self.header_style = header_style
