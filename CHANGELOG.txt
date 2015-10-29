@@ -1,0 +1,2 @@
+0.6.1
+  - set default refname by column name
