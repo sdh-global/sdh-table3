@@ -6,7 +6,6 @@ class CategoryFilter(BasePlugin):
         self.categories = categories
         self.default = default
 
-
     def process_request(self, table, request):
         table.features['category'] = {'options': self.categories,
                                       'selected': None}
@@ -20,9 +19,8 @@ class CategoryFilter(BasePlugin):
                 cb(category)
 
 
-
 class DropdownFilter(BasePlugin):
-    def __init__(self, key, options, label=None, default=None):
+    def __init__(self, key, options=None, label=None, default=None):
         """
         key - drop down filter parameter
         label = item Label
@@ -30,24 +28,32 @@ class DropdownFilter(BasePlugin):
         """
         self.key = key
         self.label = label
-        self.options = options
+        self._options = options
         self.default = default
+        self.selected = None
 
+    def options(self):
+        cb = getattr(self.table, 'dropdown_options_%s' % self.key, None)
+        if cb:
+            self._options = cb(self, self._options)
+        return self._options
 
     def process_request(self, table, request):
-        value = request.REQUEST.get(self.key,
-                                    self.default)
+        self.selected = request.REQUEST.get(self.key,
+                                            self.default)
 
         state = {'options': self.options,
                  'key': self.key,
                  'label': self.label,
-                 'selected': value}
+                 'selected': self.selected}
 
         plugins = table.features.get('dropdown', [])
         plugins.append(state)
         table.features['dropdown'] = plugins
+        feature_key = 'dropdown_%s' % self.key
+        table.features[feature_key] = self
 
-        if value:
+        if self.selected:
             cb = getattr(table, 'dropdown_filter_%s' % self.key, None)
             if cb and callable(cb):
-                cb(value)
+                cb(self.selected)

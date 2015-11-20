@@ -18,7 +18,8 @@ class Column(object):
     creation_counter = 0
 
     def __init__(self, label, refname=None, sortable=False, order_by=None,
-                 header_style=None, cell_attrs=None, default_value='',
+                 header_style=None, header_attrs=None,
+                 cell_attrs=None, default_value='',
                  **attrs):
         self.name = None #fills by table metaclass
         self.label = label
@@ -26,6 +27,7 @@ class Column(object):
         self.sortable = sortable
         self.order_by = order_by
         self.header_style = header_style
+        self.header_attrs = header_attrs or {}
         self._cell_attrs = cell_attrs or {}
         self.extra_cell_attrs = {}
         self.attrs = attrs
@@ -71,6 +73,9 @@ class Column(object):
             return self.default_value
         return value
 
+    def header_html_attrs(self, table):
+        return flatatt(self.header_attrs)
+
     def cell_html_attrs(self, table, row, value, row_number):
         """ render html cell attr """
         result_attrs = {}
@@ -86,6 +91,18 @@ class Column(object):
 
 class LabelColumn(Column):
     pass
+
+
+class DateTimeColumn(Column):
+    def __init__(self, *args, **attrs):
+        self.format = attrs.pop('format', None)
+        super(DateTimeColumn, self).__init__(*args, **attrs)
+
+    def as_html(self, table, row, **kwargs):
+        value = self.get_value(table, row, **kwargs)
+        if value is None:
+            return self.default_value
+        return value.strftime(self.format)
 
 
 class HrefColumn(Column):

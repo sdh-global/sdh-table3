@@ -1,0 +1,11 @@
+{% load table3 %}
+<li><select name="{{ plugin.key }}" autocomplete="off" onchange="location=this.value">
+{% for item in plugin.options %}
+  {% if item.0 = plugin.selected  %}
+    <option value="?{% url_replace plugin.key item.0 %}" selected="selected">{{ item.1 }}</option>
+  {% else %}
+    <option value="?{% url_replace plugin.key item.0 %}">{{ item.1 }}</option>
+  {% endif %}
+{% endfor %}
+    </select>
+</li>

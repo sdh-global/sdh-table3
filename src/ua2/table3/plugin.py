@@ -10,4 +10,7 @@ class BasePlugin(object):
       process_response(self, request)
       process_row(self, request, row)
     """
+    request = None
+    table = None
+
 

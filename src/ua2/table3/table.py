@@ -1,3 +1,5 @@
+import copy
+
 from ua2.table3.plugin import BasePlugin, StopProcessing
 from ua2.table3.column import Column
 
@@ -83,14 +85,14 @@ class BaseTableMetaclass(type):
                                 plugin)
             rc.append(plugin)
         setattr(new_class, 'render', render)
-        setattr(new_class, 'plugins', rc)
+        setattr(new_class, 'base_plugins', rc)
 
 
 class Table(six.with_metaclass(BaseTableMetaclass)):
     def __init__(self, key_name, session_storage, data_source):
         self.id = key_name
         self.data_proxy = None # Class that retrieve data from extetnal storage
-        self.plugins = []
+        self.plugins = copy.deepcopy(self.base_plugins)
 
         self.request = None
         self.data = data_source
@@ -107,7 +109,9 @@ class Table(six.with_metaclass(BaseTableMetaclass)):
 
         self.rows_iterator = self.data
 
-        for plugin in self.__class__.plugins:
+        for plugin in self.plugins:
+            plugin.request = self.request
+            plugin.table = self
             if hasattr(plugin, 'process_request'):
                 plugin.process_request(self, self.request)
 

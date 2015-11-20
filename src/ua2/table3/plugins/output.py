@@ -48,6 +48,7 @@ class _RenderContext(object):
                    'column_name': column_name,
                    'sort_mode': sort_mode,
                    'column': column,
+                   'attrs': column.header_html_attrs(self.table_obj),
                    'style': style}
 
     def header(self):
