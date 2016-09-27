@@ -1,5 +1,9 @@
+0.7.4
+  - bump version
+
 0.7.3
   - fix plugins import
+
 0.7.2
   - Fix Paginator and filters
   - PEP8
