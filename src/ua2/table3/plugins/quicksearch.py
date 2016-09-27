@@ -2,7 +2,6 @@ from ua2.table3.plugin import BasePlugin
 from django.db.models import Q
 
 
-
 class QuickSearchORM(BasePlugin):
     def __init__(self, search_fields):
         self.search_fields = search_fields
