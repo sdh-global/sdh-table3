@@ -12,5 +12,3 @@ class BasePlugin(object):
     """
     request = None
     table = None
-
-

@@ -19,7 +19,7 @@ class ActionsState(object):
             yield (action_key, action_dict[action_key])
 
     def build_actions(self):
-        return [ item[0] for item in self.obj.actions ]
+        return [item[0] for item in self.obj.actions]
 
 
 class PostAction(BasePlugin):

@@ -1,3 +1,7 @@
+0.7.2
+  - Fix Paginator and filters
+  - PEP8
+
 0.7.1
   - add DateTimeColumn
   - copy all plugins to the table instance

@@ -37,7 +37,7 @@ class Paginator(object):
     @property
     def rows_iterator(self):
         start, end = self.range
-        return self.table.data[start:end]
+        return self.table.rows_iterator[start:end]
 
     @property
     def data_length(self):
@@ -63,7 +63,7 @@ class Paginator(object):
     def range(self):
         start = (self.page_number - 1) * self.row_per_page
         end = self.page_number * self.row_per_page
-        return (start, end)
+        return start, end
 
     @property
     def page_bar(self):
@@ -103,7 +103,7 @@ class Paginator(object):
         if self.page_number + self.page_per_segment > self.pages_count:
             return None
 
-        return (self.page_number + self.page_per_segment)
+        return self.page_number + self.page_per_segment
 
     @property
     def show_first_page(self):

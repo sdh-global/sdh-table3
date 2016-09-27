@@ -135,8 +135,7 @@ class HrefColumn(Column):
             href=self.resolve(table, row),
             attrs=flatatt(self.attrs),
             content=escape(self.get_value(table, row)),
-            get_args=self.get_args
-            )
+            get_args=self.get_args)
         return mark_safe(html)
 
 
@@ -152,7 +151,7 @@ class TemplateColumn(Column):
         return loader.render_to_string(
             self.template,
             dictionary={'table': table,
-                        'record': row, # for compatilibty with django_tables2 tempaltes
+                        'record': row,  # for compatibility with django_tables2 tempaltes
                         'row': row},
             context_instance=RequestContext(table.request))
 
@@ -166,7 +165,7 @@ class InlineTemplateColumn(Column):
         return self.template.render(
             RequestContext(table.request,
                            {'table': table,
-                            'record': row, # for compatilibty with django_tables2 tempaltes
+                            'record': row,  # for compatibility with django_tables2 tempaltes
                             'row': row}))
 
 

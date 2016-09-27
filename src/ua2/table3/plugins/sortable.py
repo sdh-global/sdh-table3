@@ -1,5 +1,6 @@
 from ua2.table3.plugin import BasePlugin
 
+
 class SortedColumnHeader(object):
     ASC = '*'
     DESC = '-'
@@ -24,7 +25,7 @@ class SingleSortPlugin(BasePlugin):
         if mode == 'desc':
             prefix = '-'
 
-        return [ '%s%s' % (prefix, item) for item in order_by ]
+        return ['%s%s' % (prefix, item) for item in order_by]
 
     def process_request(self, table, request):
         table.features['sort'] = {}

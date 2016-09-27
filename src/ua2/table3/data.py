@@ -1,5 +1,6 @@
 from django.db.models.manager import Manager
 
+
 class DjnagoORM(object):
     def __init__(self, qs=None):
         self.table = None
@@ -14,7 +15,6 @@ class DjnagoORM(object):
     def __iter__(self):
         for item in self.qs:
             yield item
-
 
     def _recursive_value(self, row, keylist):
         value = None
