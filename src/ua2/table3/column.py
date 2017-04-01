@@ -6,10 +6,14 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.html import escape
 from django.template import loader, RequestContext, Template
-from django.forms.util import flatatt
 from django.utils.formats import number_format
 
 from .utils import dict_type, list_type, tuple_type, str_type, unicode_type
+
+try:
+    from django.forms.util import flatatt
+except ImportError:
+    from django.forms.utils import flatatt
 
 
 @python_2_unicode_compatible
@@ -131,6 +135,10 @@ class HrefColumn(Column):
         return href
 
     def as_html(self, table, row, **kwargs):
+        value = self.get_value(table, row)
+        if value is None:
+            return self.default_value
+
         html = "<a href='{href}{get_args}' {attrs}>{content}</a>".format(
             href=self.resolve(table, row),
             attrs=flatatt(self.attrs),

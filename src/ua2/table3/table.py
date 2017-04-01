@@ -1,10 +1,10 @@
 import copy
+from collections import OrderedDict
 
-from ua2.table3.column import Column
 
 from django.utils import six
-from django.utils.datastructures import SortedDict
 
+from .column import Column
 from .render import LazyRender
 from .settings import CFG_TABLE_PLUGINS
 from .plugin import BasePlugin
@@ -30,7 +30,7 @@ def get_declared_columns(bases, attrs, with_base_columns=True):
     for name, column in columns:
         setattr(column, 'name', name)
 
-    return SortedDict(columns)
+    return OrderedDict(columns)
 
 
 class BaseTableMetaclass(type):
