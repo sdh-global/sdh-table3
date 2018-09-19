@@ -21,7 +21,10 @@ class DjnagoORM(object):
         if hasattr(row, keylist[0]):
             value = getattr(row, keylist[0])
             if callable(value):
-                value = value()
+                if value.__class__.__name__ == 'ManyRelatedManager':
+                    value = value.all()
+                else:
+                    value = value()
             if len(keylist) > 1:
                 return self._recursive_value(value, keylist[1:])
 

@@ -1,4 +1,4 @@
-from ua2.table3.plugin import BasePlugin
+from sdh.table3.plugin import BasePlugin
 
 
 class CategoryFilter(BasePlugin):
@@ -9,8 +9,10 @@ class CategoryFilter(BasePlugin):
     def process_request(self, table, request):
         table.features['category'] = {'options': self.categories,
                                       'selected': None}
-
-        category = request.REQUEST.get('category', self.default)
+        if request.method == 'GET':
+            category = request.GET.get('category', self.default)
+        else:
+            category = request.POST.get('category', self.default)
         categories = dict(self.categories)
         if category in categories:
             table.features['category']['selected'] = category
@@ -39,8 +41,10 @@ class DropdownFilter(BasePlugin):
         return self._options
 
     def process_request(self, table, request):
-        self.selected = request.REQUEST.get(self.key,
-                                            self.default)
+        if request.method == 'GET':
+            self.selected = request.GET.get(self.key, self.default)
+        else:
+            self.selected = request.POST.get(self.key, self.default)
 
         state = {'options': self.options,
                  'key': self.key,

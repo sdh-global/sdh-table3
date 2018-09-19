@@ -25,7 +25,7 @@ class Column(object):
                  header_style=None, header_attrs=None,
                  cell_attrs=None, default_value='',
                  **attrs):
-        self.name = None #fills by table metaclass
+        self.name = None  # fills by table metaclass
         self.label = label
         self.refname = refname
         self.sortable = sortable
@@ -47,7 +47,10 @@ class Column(object):
         if hasattr(row, keylist[0]):
             value = getattr(row, keylist[0])
             if callable(value):
-                value = value()
+                if value.__class__.__name__ == 'ManyRelatedManager':
+                    value = value.all()
+                else:
+                    value = value()
             if len(keylist) > 1:
                 return self._recursive_value(value, keylist[1:])
         return value
@@ -158,10 +161,9 @@ class TemplateColumn(Column):
 
         return loader.render_to_string(
             self.template,
-            dictionary={'table': table,
-                        'record': row,  # for compatibility with django_tables2 tempaltes
-                        'row': row},
-            context_instance=RequestContext(table.request))
+            {'table': table,
+             'record': row,  # for compatibility with django_tables2 tempaltes
+             'row': row})
 
 
 class InlineTemplateColumn(Column):

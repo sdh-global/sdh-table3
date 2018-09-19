@@ -5,7 +5,7 @@ class BaseRequest(object):
     source = 'HTTP'  # HTTP, AJAX, CELERY, WAMP, ...
     method = 'GET'  # GET, POST, PUT, ...
     args = {}
-    output = 'html'  #html, json, csv, ...
+    output = 'html'  # html, json, csv, ...
 
     def __init__(self, *args, **kwargs):
         self.settings = {}
@@ -33,7 +33,7 @@ class DjangoRequest(BaseRequest):
         self.request = request
         if request.is_ajax():
             self.source = 'AJAX'
-        self.args = request.REQUEST
+            self.args = request.GET if request.method == 'GET' else request.POST
         self.output = self.args.get('output', self.output)
         super(DjangoRequest, self).__init__(request)
 

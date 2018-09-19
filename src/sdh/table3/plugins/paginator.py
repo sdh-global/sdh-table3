@@ -12,12 +12,19 @@ class Paginator(object):
         self.request = request
 
         try:
-            self.row_per_page = request.REQUEST.get('row_per_page', row_per_page)
+            if request.method == 'GET':
+                self.row_per_page = int(request.GET.get('row_per_page', row_per_page))
+            else:
+                self.row_per_page = int(request.POST.get('row_per_page', row_per_page))
         except ValueError:
             self.row_per_page = row_per_page
 
         try:
-            self.page_number = max(int(request.REQUEST.get('page', 1)), 1)
+            if request.method == 'GET':
+                page_number = request.GET.get('page', 1)
+            else:
+                page_number = request.POST.get('page', 1)
+            self.page_number = max(int(page_number), 1)
         except ValueError:
             self.page_number = 1
 
@@ -144,7 +151,8 @@ class PaginatorPlugin(BasePlugin):
         self.paginator_cls = CFG_TABLE_PAGINATOR or Paginator
 
     def process_request(self, table, request):
-        if request.REQUEST.get('page') != 'all':
+        page = request.GET.get('page') if request.method == 'GET' else request.POST.get('page')
+        if page != 'all':
             table.features['paginator'] = self.paginator_cls(table,
                                                              request,
                                                              self.row_per_page)

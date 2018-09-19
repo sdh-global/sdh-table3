@@ -1,8 +1,7 @@
 from __future__ import unicode_literals
 
 from django.utils.encoding import python_2_unicode_compatible
-from django.template import RequestContext
-from django.template.loader import  select_template, render_to_string
+from django.template.loader import select_template
 
 from ..plugin import BasePlugin
 
@@ -20,14 +19,14 @@ class _RenderContext(object):
         """
         template = self.plugin.get_template('main.html')
 
-        ctx = RequestContext(self.table_obj.request)
+        ctx = dict()
         ctx['table'] = self.table_obj
         ctx['header'] = self.header()
         ctx['columns'] = self.columns()
-        return template.render(ctx)
+        return template.render(ctx, self.table_obj.request)
 
     def context(self):
-        ctx = RequestContext(self.table_obj.request)
+        ctx = dict()
         ctx['table'] = self.table_obj
         ctx['header'] = self.header()
         ctx['columns'] = self.columns()
@@ -37,7 +36,7 @@ class _RenderContext(object):
         for column_name in self.table_obj.columns:
             column = self.table_obj.base_columns[column_name]
             sort_mode = self.table_obj.features.get('sort',
-                                               {}).get(column_name, None)
+                                                    {}).get(column_name, None)
 
             if column.header_style and callable(column.header_style):
                 style = column.header_style(self.table_obj)
@@ -53,10 +52,10 @@ class _RenderContext(object):
 
     def header(self):
         for column_data in self.columns():
-            ctx = RequestContext(self.table_obj.request)
+            ctx = dict()
             ctx.update(column_data)
             template = self.plugin.get_template(column_data['column'].header_template)
-            yield template.render(ctx)
+            yield template.render(ctx, self.table_obj.request)
 
 
 class DjangoTemplatePlugin(BasePlugin):
@@ -68,7 +67,7 @@ class DjangoTemplatePlugin(BasePlugin):
 
     """
     output = 'html'
-    base_path = 'ua2/table3/'
+    base_path = 'sdh/table3/'
 
     def __init__(self, template_path=None):
         self.template_path = template_path or self.base_path

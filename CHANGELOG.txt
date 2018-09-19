@@ -1,3 +1,10 @@
+1.0.0
+  - move to sdh name space
+  - Django 1.11 compatibility
+
+0.7.7
+  - Fix HrefColumn when reference value is None
+
 0.7.6
   - Added Django 1.10 compatibility
 

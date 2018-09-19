@@ -1,4 +1,4 @@
-from ua2.table3.plugin import BasePlugin
+from sdh.table3.plugin import BasePlugin
 from django.db.models import Q
 
 
@@ -23,9 +23,10 @@ class QuickSearchORM(BasePlugin):
 
     def process_request(self, table, request):
         table.features['quicksearch'] = {'active': False},
+        quicksearch = request.GET.get('quicksearch') if request.method == 'GET' else request.POST.get('quicksearch')
 
-        if request.REQUEST.get('quicksearch', None):
-            search_string = self.clean(request.REQUEST['quicksearch'])
+        if quicksearch:
+            search_string = self.clean(quicksearch)
             table.features['quicksearch'] = {'active': True,
                                              'search_string': search_string}
 

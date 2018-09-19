@@ -2,13 +2,13 @@
     <ul class="nav nav-pills dataTables-nav">
         <li class="active">
             {% if table.features.quicksearch  %}
-               {% include "ua2/table3/quicksearch.html" %}
+               {% include "sdh/table3/quicksearch.html" %}
             {% endif %}
             {% if table.features.category %}
-              {% include "ua2/table3/category.html" %}
+              {% include "sdh/table3/category.html" %}
             {% endif %}
             {% for plugin in table.features.postaction %}
-              {% include "ua2/table3/post_action.html" %}
+              {% include "sdh/table3/post_action.html" %}
             {% endfor %}
         </li>
     </ul>
@@ -33,6 +33,6 @@
     </tbody>
 </table>
 {% if table.features.paginator %}
-{% include "ua2/table3/paginator.html" %}
+{% include "sdh/table3/paginator.html" %}
 {% endif %}
 </div>

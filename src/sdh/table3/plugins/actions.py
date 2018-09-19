@@ -1,5 +1,4 @@
-from ua2.table3.plugin import BasePlugin
-from django.template import loader, RequestContext
+from sdh.table3.plugin import BasePlugin
 
 
 class ActionsState(object):
@@ -33,6 +32,7 @@ class PostAction(BasePlugin):
         plugins = table.features.get('postaction', [])
         plugins.append(state)
         table.features['postaction'] = plugins
+        postaction = request.GET.get('postaction') if request.method == 'GET' else request.POST.get('postaction')
 
-        if request.REQUEST.get('postaction', '') in state.build_actions():
-            state.process(request.REQUEST.get('postaction', ''))
+        if postaction in state.build_actions():
+            state.process(postaction)

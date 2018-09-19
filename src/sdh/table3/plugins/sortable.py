@@ -1,4 +1,4 @@
-from ua2.table3.plugin import BasePlugin
+from sdh.table3.plugin import BasePlugin
 
 
 class SortedColumnHeader(object):
@@ -29,7 +29,8 @@ class SingleSortPlugin(BasePlugin):
 
     def process_request(self, table, request):
         table.features['sort'] = {}
-        sort_by = request.REQUEST.get('sort_by', self.default_order_by)
+        sort_by = request.GET.get('sort_by') if request.method == 'GET' else request.POST.get('sort_by')
+        sort_by = sort_by or self.default_order_by
         if not sort_by:
             return
 
