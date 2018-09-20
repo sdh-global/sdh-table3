@@ -21,11 +21,11 @@ def get_declared_columns(bases, attrs, with_base_columns=True):
     if with_base_columns:
         for base in bases[::-1]:
             if hasattr(base, 'base_columns'):
-                columns = base.base_columns.items() + columns
+                columns = list(base.base_columns.items()) + columns
     else:
         for base in bases[::-1]:
             if hasattr(base, 'declared_columns'):
-                columns = base.declared_columns.items() + columns
+                columns = list(base.declared_columns.items()) + columns
 
     for name, column in columns:
         setattr(column, 'name', name)
