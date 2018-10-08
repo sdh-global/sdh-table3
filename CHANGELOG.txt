@@ -1,3 +1,6 @@
+1.0.2
+  - fix rendering Template column with argument request
+
 1.0.0
   - move to sdh name space
   - Django 1.11 compatibility
