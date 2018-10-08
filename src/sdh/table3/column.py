@@ -163,7 +163,8 @@ class TemplateColumn(Column):
             self.template,
             {'table': table,
              'record': row,  # for compatibility with django_tables2 tempaltes
-             'row': row})
+             'row': row},
+            request=table.request)
 
 
 class InlineTemplateColumn(Column):
