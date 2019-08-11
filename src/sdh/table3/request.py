@@ -44,4 +44,4 @@ class DjangoRequest(BaseRequest):
         mimetype = getattr(output_handler, 'mimetype', 'text/html')
 
         return HttpResponse(output_handler(self, table, data),
-                            mimetype=mimetype)
+                            content_type=mimetype)

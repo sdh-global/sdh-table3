@@ -7,4 +7,5 @@ src/ua2/.ropeproject/*
 .idea/*
 build/*
 dist/*
+env/*
 src/*.egg-info/*

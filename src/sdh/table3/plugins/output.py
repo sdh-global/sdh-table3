@@ -1,12 +1,8 @@
-from __future__ import unicode_literals
-
-from django.utils.encoding import python_2_unicode_compatible
 from django.template.loader import select_template
 
 from ..plugin import BasePlugin
 
 
-@python_2_unicode_compatible
 class _RenderContext(object):
     def __init__(self, plugin, table_obj, table_cls):
         self.plugin = plugin

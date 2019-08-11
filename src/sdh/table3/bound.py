@@ -9,8 +9,8 @@ class BoundCell(object):
         self._cell_atts = None
         self._value = None
 
-    def __unicode__(self):
-        return unicode(self.value)
+    def __str__(self):
+        return str(self.value)
 
     @property
     def value(self):

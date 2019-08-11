@@ -1,22 +1,14 @@
-from __future__ import unicode_literals
 
 from django.db.models.manager import Manager
 from django.utils.safestring import mark_safe
-from django.core.urlresolvers import reverse, NoReverseMatch
-from django.utils.encoding import python_2_unicode_compatible
+from django.urls import reverse, NoReverseMatch
 from django.utils.html import escape
 from django.template import loader, RequestContext, Template
 from django.utils.formats import number_format
-
-from .utils import dict_type, list_type, tuple_type, str_type, unicode_type
-
-try:
-    from django.forms.util import flatatt
-except ImportError:
-    from django.forms.utils import flatatt
+from django.forms.utils import flatatt
 
 
-@python_2_unicode_compatible
+
 class Column(object):
     header_template = 'header_column.html'
     creation_counter = 0
@@ -89,7 +81,7 @@ class Column(object):
 
         if callable(self._cell_attrs):
             result_attrs.update(self._cell_attrs(table, row, value, row_number))
-        elif isinstance(self._cell_attrs, dict_type):
+        elif isinstance(self._cell_attrs, dict):
             result_attrs.update(self._cell_attrs)
 
         result_attrs.update(self.extra_cell_attrs)
@@ -126,10 +118,10 @@ class HrefColumn(Column):
         reverse_args = self.reverse_args
         if callable(reverse_args):
             reverse_args = reverse_args(row)
-        elif isinstance(self.reverse_args, list_type) or isinstance(self.reverse_args, tuple_type):
-            reverse_args = [ self.get_value(table, row, refname=item) for item in reverse_args ]
-        elif isinstance(reverse_args, str_type) or isinstance(reverse_args, unicode_type):
-            reverse_args = [ self.get_value(table, row, refname=reverse_args)]
+        elif isinstance(self.reverse_args, (list, tuple)):
+            reverse_args = [self.get_value(table, row, refname=item) for item in reverse_args]
+        elif isinstance(reverse_args, str):
+            reverse_args = [self.get_value(table, row, refname=reverse_args)]
 
         try:
             href = reverse(self.reverse, args=reverse_args)

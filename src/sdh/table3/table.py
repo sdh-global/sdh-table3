@@ -2,8 +2,6 @@ import copy
 from collections import OrderedDict
 
 
-from django.utils import six
-
 from .column import Column
 from .render import LazyRender
 from .settings import CFG_TABLE_PLUGINS
@@ -15,7 +13,7 @@ def get_declared_columns(bases, attrs, with_base_columns=True):
     # inspired from django.forms.forms.get_declared_fields
 
     columns = [(column_name, attrs.pop(column_name))
-               for column_name, obj in list(six.iteritems(attrs)) if isinstance(obj, Column)]
+               for column_name, obj in attrs.items() if isinstance(obj, Column)]
     columns.sort(key=lambda x: x[1].creation_counter)
 
     if with_base_columns:
@@ -85,7 +83,7 @@ class BaseTableMetaclass(type):
         setattr(new_class, 'base_plugins', rc)
 
 
-class Table(six.with_metaclass(BaseTableMetaclass)):
+class Table(metaclass=BaseTableMetaclass):
     def __init__(self, key_name, session_storage, data_source):
         self.id = key_name
         self.data_proxy = None  # Class that retrieve data from external storage
