@@ -13,7 +13,7 @@ def get_declared_columns(bases, attrs, with_base_columns=True):
     # inspired from django.forms.forms.get_declared_fields
 
     columns = [(column_name, attrs.pop(column_name))
-               for column_name, obj in attrs.items() if isinstance(obj, Column)]
+               for column_name, obj in attrs.copy().items() if isinstance(obj, Column)]
     columns.sort(key=lambda x: x[1].creation_counter)
 
     if with_base_columns:
