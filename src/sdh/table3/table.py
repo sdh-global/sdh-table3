@@ -102,8 +102,6 @@ class Table(metaclass=BaseTableMetaclass):
     def process_request(self, _request):
         self.request = _request
 
-        self.rows_iterator = self.data
-
         for plugin in self.plugins:
             plugin.request = self.request
             plugin.table = self
@@ -114,7 +112,8 @@ class Table(metaclass=BaseTableMetaclass):
 
     def rows(self):
         row_number = 1
-        for row in self.rows_iterator:
+        _iterator = self.rows_iterator or self.data
+        for row in _iterator:
             yield BoundRow(self, row_number, self.data, row)
             row_number += 1
 

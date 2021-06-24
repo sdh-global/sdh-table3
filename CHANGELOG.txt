@@ -1,3 +1,14 @@
+2.0.1
+  - fixed bug with table.data and table.row_iterator - quicsearch works incorrectly
+    All plugins should operate only table.data queryset
+  - added example how to use DropdownFilter for column filter
+
+1.0.4
+  - fix rendering DateTimeColumn with date value
+
+1.0.3
+  - change rendering DateTimeColumn with current active timezone
+
 1.0.2
   - fix rendering Template column with argument request
 

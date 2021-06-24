@@ -1,3 +1,4 @@
+import datetime
 
 from django.db.models.manager import Manager
 from django.utils.safestring import mark_safe
@@ -6,6 +7,8 @@ from django.utils.html import escape
 from django.template import loader, RequestContext, Template
 from django.utils.formats import number_format
 from django.forms.utils import flatatt
+
+from django.utils import timezone
 
 
 
@@ -101,6 +104,10 @@ class DateTimeColumn(Column):
         value = self.get_value(table, row, **kwargs)
         if value is None:
             return self.default_value
+
+        if isinstance(value, datetime.datetime) and timezone.is_aware(value):
+            value = timezone.make_naive(value)
+
         return value.strftime(self.format)
 
 

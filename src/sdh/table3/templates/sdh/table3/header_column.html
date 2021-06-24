@@ -7,5 +7,9 @@
 {% else %}class="sorting_disabled"
 {% endif %}>{{ column.label }}
 {% table_feature table 'dropdown' column.name %}
-
+    {% if feature %}
+        <div>
+            {% include "./dropdown.html" with plugin=feature %}
+        </div>
+    {% endif %}
 </th>

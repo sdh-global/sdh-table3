@@ -22,6 +22,8 @@ class CategoryFilter(BasePlugin):
 
 
 class DropdownFilter(BasePlugin):
+    SLUG = 'dropdown'
+
     def __init__(self, key, options=None, label=None, default=None):
         """
         key - drop down filter parameter
@@ -35,7 +37,7 @@ class DropdownFilter(BasePlugin):
         self.selected = None
 
     def options(self):
-        cb = getattr(self.table, 'dropdown_options_%s' % self.key, None)
+        cb = getattr(self.table, f'{self.SLUG}_options_{self.key}', None)
         if cb:
             self._options = cb(self, self._options)
         return self._options
@@ -51,13 +53,13 @@ class DropdownFilter(BasePlugin):
                  'label': self.label,
                  'selected': self.selected}
 
-        plugins = table.features.get('dropdown', [])
+        plugins = table.features.get(self.SLUG, [])
         plugins.append(state)
-        table.features['dropdown'] = plugins
+        table.features[self.SLUG] = plugins
         feature_key = 'dropdown_%s' % self.key
-        table.features[feature_key] = self
+        table.features[f'{self.SLUG}_{self.key}'] = self
 
         if self.selected:
-            cb = getattr(table, 'dropdown_filter_%s' % self.key, None)
+            cb = getattr(table, f'{self.SLUG}_filter_{self.key}', None)
             if cb and callable(cb):
                 cb(self.selected)

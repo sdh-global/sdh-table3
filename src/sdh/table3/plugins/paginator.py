@@ -43,7 +43,10 @@ class Paginator(object):
     @property
     def rows_iterator(self):
         start, end = self.range
-        return self.table.rows_iterator[start:end]
+        if hasattr(self.table.data, 'clone'):
+            return self.table.data.clone()[start:end]
+        return self.table.data[start:end]
+
 
     @property
     def data_length(self):

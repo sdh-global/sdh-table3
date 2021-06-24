@@ -1,0 +1,15 @@
+*.o
+*.orig
+*.rej
+*.pyc
+*.tmp
+*.DS_Store
+*~
+.\#*
+env/*
+env2/*
+.venv/*
+.idea/
+dist/*
+.pypirc
+*egg-info/*
