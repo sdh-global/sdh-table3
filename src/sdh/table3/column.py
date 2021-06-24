@@ -11,7 +11,6 @@ from django.forms.utils import flatatt
 from django.utils import timezone
 
 
-
 class Column(object):
     header_template = 'header_column.html'
     creation_counter = 0
@@ -119,6 +118,9 @@ class HrefColumn(Column):
         super(HrefColumn, self).__init__(*args, **attrs)
 
     def resolve(self, table, row):
+        if callable(self.reverse):
+            return self.reverse(row)
+
         if not self.reverse:
             return ''
 
@@ -140,6 +142,10 @@ class HrefColumn(Column):
         value = self.get_value(table, row)
         if value is None:
             return self.default_value
+
+        url = self.resolve(table, row)
+        if url is None:
+            return super().as_html(table, row, **kwargs)
 
         html = "<a href='{href}{get_args}' {attrs}>{content}</a>".format(
             href=self.resolve(table, row),

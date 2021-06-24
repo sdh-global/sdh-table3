@@ -1,3 +1,7 @@
+2.0.2
+  - added more plugins
+  - improved HrefColumn
+
 2.0.1
   - fixed bug with table.data and table.row_iterator - quicsearch works incorrectly
     All plugins should operate only table.data queryset

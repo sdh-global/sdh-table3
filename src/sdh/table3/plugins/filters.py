@@ -56,10 +56,29 @@ class DropdownFilter(BasePlugin):
         plugins = table.features.get(self.SLUG, [])
         plugins.append(state)
         table.features[self.SLUG] = plugins
-        feature_key = 'dropdown_%s' % self.key
         table.features[f'{self.SLUG}_{self.key}'] = self
 
         if self.selected:
             cb = getattr(table, f'{self.SLUG}_filter_{self.key}', None)
             if cb and callable(cb):
                 cb(self.selected)
+
+
+class FilterFormPlugin(BasePlugin):
+    SLUG = 'filter_form'
+
+    def __init__(self, form):
+        self.form = form
+
+    def process_request(self, table, request):
+        filter_form = self.form(request.GET or None, request=request)
+
+        has_filters = filter_form.has_changed()
+
+        form = {"body": filter_form, "buttons": {"apply": True, "back": True}}
+
+        table.features[self.SLUG] = {'form': form, 'has_filters': has_filters}
+
+        cb = getattr(table, self.SLUG, None)
+        if cb and callable(cb):
+            cb(filter_form)
