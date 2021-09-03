@@ -1,3 +1,6 @@
+2.0.3
+  - fixed pagination with segments
+
 2.0.2
   - added more plugins
   - improved HrefColumn
