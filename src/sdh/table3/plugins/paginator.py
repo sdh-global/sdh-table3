@@ -47,7 +47,6 @@ class Paginator(object):
             return self.table.data.clone()[start:end]
         return self.table.data[start:end]
 
-
     @property
     def data_length(self):
         """ Return input data length (in rows)
@@ -102,17 +101,17 @@ class Paginator(object):
 
     @property
     def prev_page_segment(self):
-        if self.page_number - self.page_per_segment <= 0:
+        if self.page_number - self.page_per_segment // 2 - 1 <= 1:
             return None
 
-        return (self.page_number - self.page_per_segment) or 1
+        return (self.page_number - self.page_per_segment // 2 - 1) or 1
 
     @property
     def next_page_segment(self):
-        if self.page_number + self.page_per_segment > self.pages_count:
+        if self.page_number + self.page_per_segment // 2 + 1 >= self.pages_count:
             return None
 
-        return self.page_number + self.page_per_segment
+        return self.page_number + self.page_per_segment // 2 + 1
 
     @property
     def show_first_page(self):
