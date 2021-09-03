@@ -52,3 +52,4 @@ class SingleSortPlugin(BasePlugin):
 
                 order_by = self.set_ordering_mode(order_by, sort_mode)
                 table.data = table.data.order_by(*order_by)
+                table.rows_iterator = table.rows_iterator.order_by(*order_by)
