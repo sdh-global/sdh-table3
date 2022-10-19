@@ -1,3 +1,12 @@
+2.0.5
+  - add option for disable timezone localization
+
+
+2.0.4
+  - switch datetime formating to use django.utils.formats
+  - new column DateColumnt
+  - fix possible xss
+
 2.0.3
   - fixed pagination with segments
 

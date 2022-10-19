@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from django.urls import reverse, NoReverseMatch
 from django.utils.html import escape
 from django.template import loader, RequestContext, Template
-from django.utils.formats import number_format
+from django.utils.formats import number_format, date_format
 from django.forms.utils import flatatt
 
 from django.utils import timezone
@@ -96,7 +96,8 @@ class LabelColumn(Column):
 
 class DateTimeColumn(Column):
     def __init__(self, *args, **attrs):
-        self.format = attrs.pop('format', None)
+        self.format = attrs.pop('format', 'DATETIME_FORMAT')
+        self.localize = attrs.pop('localize', True)
         super(DateTimeColumn, self).__init__(*args, **attrs)
 
     def as_html(self, table, row, **kwargs):
@@ -104,10 +105,16 @@ class DateTimeColumn(Column):
         if value is None:
             return self.default_value
 
-        if isinstance(value, datetime.datetime) and timezone.is_aware(value):
+        if self.localize and isinstance(value, datetime.datetime) and timezone.is_aware(value):
             value = timezone.make_naive(value)
 
-        return value.strftime(self.format)
+        return date_format(value, self.format)
+
+
+class DateColumn(DateTimeColumn):
+    def __init__(self, *args, **attrs):
+        _format = attrs.pop('format', 'DATE_FORMAT')
+        super().__init__(*args, format=_format, **attrs)
 
 
 class HrefColumn(Column):
@@ -195,8 +202,8 @@ class CheckboxColumn(Column):
         attrs = self.attrs.copy()
         attrs['type'] = 'checkbox'
         attrs['autocomplete'] = 'off'
-        attrs['name'] = self.name
-        attrs['value'] = self.get_value(table, row, **kwargs)
+        attrs['name'] = escape(self.name)
+        attrs['value'] = escape(self.get_value(table, row, **kwargs))
 
         html = "<input {attrs} />".format(attrs=flatatt(attrs))
         return mark_safe(html)
