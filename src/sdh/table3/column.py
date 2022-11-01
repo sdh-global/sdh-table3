@@ -96,7 +96,7 @@ class LabelColumn(Column):
 
 class DateTimeColumn(Column):
     def __init__(self, *args, **attrs):
-        self.format = attrs.pop('format')
+        self.format = attrs.pop('format', None)
         self.localize = attrs.pop('localize', True)
         super(DateTimeColumn, self).__init__(*args, **attrs)
 
