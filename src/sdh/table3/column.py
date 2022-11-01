@@ -96,7 +96,7 @@ class LabelColumn(Column):
 
 class DateTimeColumn(Column):
     def __init__(self, *args, **attrs):
-        self.format = attrs.pop('format', 'DATETIME_FORMAT')
+        self.format = attrs.pop('format')
         self.localize = attrs.pop('localize', True)
         super(DateTimeColumn, self).__init__(*args, **attrs)
 
@@ -108,7 +108,14 @@ class DateTimeColumn(Column):
         if self.localize and isinstance(value, datetime.datetime) and timezone.is_aware(value):
             value = timezone.make_naive(value)
 
-        return date_format(value, self.format)
+        if isinstance(value, datetime.datetime) and not self.format:
+            _format = 'DATETIME_FORMAT'
+        elif isinstance(value, datetime.date) and not self.format:
+            _format = 'DATE_FORMAT'
+        else:
+            _format = self.format
+
+        return date_format(value, _format)
 
 
 class DateColumn(DateTimeColumn):

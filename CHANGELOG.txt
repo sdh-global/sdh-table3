@@ -1,6 +1,8 @@
+2.0.6
+  - add backward compatibility for using DateTimeColumn with date type
+
 2.0.5
   - add option for disable timezone localization
-
 
 2.0.4
   - switch datetime formating to use django.utils.formats
