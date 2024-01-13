@@ -3,5 +3,3 @@ include README.rst
 include CHANGELOG.txt
 recursive-include * *.html
 recursive-exclude * *.pyc
-
-

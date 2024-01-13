@@ -112,7 +112,7 @@ class Table(metaclass=BaseTableMetaclass):
 
     def rows(self):
         row_number = 1
-        _iterator = self.rows_iterator or self.data
+        _iterator = self.rows_iterator if self.rows_iterator is not None else self.data
         for row in _iterator:
             yield BoundRow(self, row_number, self.data, row)
             row_number += 1

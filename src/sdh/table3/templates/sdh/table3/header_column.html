@@ -1,5 +1,5 @@
 {% load table3 %}
-<th {% if style %}style="{{ style }}"{% endif %}
+<th {% if style %}style="{{ style }}"{% endif %}  {{ attrs }}
 {% if column.sortable %}
    {% if sort_mode == 'desc'%}class="sorting_desc" onclick="location='?{% url_replace 'sort_by' column.name %}'"
    {% elif sort_mode == 'asc'%}class="sorting_asc" onclick="location='?{% url_replace 'sort_by' '-' column.name %}'"

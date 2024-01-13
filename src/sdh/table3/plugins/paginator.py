@@ -149,7 +149,7 @@ class Paginator(object):
 class PaginatorPlugin(BasePlugin):
     def __init__(self, row_per_page=None, paginator_cls=None):
         self.row_per_page = row_per_page or CFG_TABLE_ROW_PER_PAGE
-        self.paginator_cls = CFG_TABLE_PAGINATOR or Paginator
+        self.paginator_cls = paginator_cls or CFG_TABLE_PAGINATOR or Paginator
 
     def process_request(self, table, request):
         page = request.GET.get('page') if request.method == 'GET' else request.POST.get('page')
@@ -157,3 +157,42 @@ class PaginatorPlugin(BasePlugin):
             table.features['paginator'] = self.paginator_cls(table,
                                                              request,
                                                              self.row_per_page)
+
+
+class LazyPaginator(Paginator):
+
+    def __init__(self, *args, **kwargs):
+        self._rows = None
+        self._more = False
+        super().__init__(*args, **kwargs)
+
+    def get_rows(self):
+        data = self.table.data
+        if hasattr(data, 'clone'):
+            data = data.clone()
+        start, end = self.range
+        rows = list(data[start:end + 1])
+        more = len(rows) > self.row_per_page
+        if more:
+            rows = rows[:self.row_per_page]
+        return rows, more
+
+    @property
+    def rows_iterator(self):
+        if self._rows is None:
+            self._rows, self._more = self.get_rows()
+            if not self._rows and self.page_number > 1:
+                self._rows, self._more = self.get_rows()
+        return self._rows
+
+    @property
+    def pages_count(self):
+        if self._more:
+            return self.page_number + 1
+        else:
+            return self.page_number
+
+    @property
+    def next_page_number(self):
+        if self._more:
+            return self.page_number + 1
