@@ -181,18 +181,22 @@ class LazyPaginator(Paginator):
     def rows_iterator(self):
         if self._rows is None:
             self._rows, self._more = self.get_rows()
-            if not self._rows and self.page_number > 1:
-                self._rows, self._more = self.get_rows()
         return self._rows
 
     @property
+    def has_more(self):
+        if self._rows is None:
+            self._rows, self._more = self.get_rows()
+        return self._more
+
+    @property
     def pages_count(self):
-        if self._more:
+        if self.has_more:
             return self.page_number + 1
         else:
             return self.page_number
 
     @property
     def next_page_number(self):
-        if self._more:
+        if self.has_more:
             return self.page_number + 1

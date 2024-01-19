@@ -9,7 +9,7 @@ include = ["sdh.table3"]
 [project]
 name = "sdh.table3"
 description = "Table rendering engine"
-version = "2.1.0"
+version = "2.1.1"
 dependencies = [
   "Django>=3.2"
 ]
